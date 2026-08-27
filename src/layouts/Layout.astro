@@ -3,17 +3,25 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<link rel="icon" type="image/svg+xml" href="/fiscalo-logo.svg" />
+		<link rel="icon" href="/fiscalo-logo.ico" />
+		<title>Fiscalo — Calculadoras Financieras</title>
+		<meta name="description" content="Fiscalo is a free and open-source accounting software for small businesses and freelancers." />
+		<meta name="keywords" content="fiscalo" />
+		<meta name="author" content="Hugo Bolufer Franco" />
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
 
-<style>
+<style is:global>
+	@import "tailwindcss";
+	@import 'tailwind-animations';
+
+	body{
+		background: #f9f4ec;
+	}
 	html,
 	body {
 		margin: 0;
