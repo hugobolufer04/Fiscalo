@@ -1,0 +1,79 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const vias = [
+	{ titulo: 'Respuesta rápida', texto: 'Intentamos responder a todas las consultas en menos de 48 horas laborables.', icon: 'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z' },
+	{ titulo: 'Sin spam', texto: 'Solo usaremos tu correo para responder a tu consulta. Nunca te enviaremos publicidad no solicitada.', icon: 'M22 6L12 13 2 6v12h20V6z' },
+	{ titulo: 'Qué nos puedes contar', texto: 'Dudas, sugerencias, errores en las calculadoras o propuestas de nuevas herramientas. Todo es bienvenido.', icon: 'M11 19l-7 4v-16a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8' },
+];
+---
+
+<ContentLayout
+	label="Contacto"
+	title="Hablemos"
+	subtitle="¿Tienes una duda, sugerencia o quieres proponernos una nueva calculadora? Escríbenos y te responderemos."
+>
+
+	<div class="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-8 items-start mb-12">
+
+		<div class="flex flex-col gap-6">
+			{vias.map((v) => (
+				<div class="flex items-center gap-5 bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-6 shadow-sm">
+					<div class="w-12 h-12 flex-shrink-0 rounded-xl bg-teal-50 flex items-center justify-center">
+						<svg class="w-6 h-6 text-teal-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={v.icon}/></svg>
+					</div>
+					<div>
+						<h2 class="font-serif text-base font-medium text-stone-900 mb-1">{v.titulo}</h2>
+						<p class="text-sm text-stone-500 leading-relaxed">{v.texto}</p>
+					</div>
+				</div>
+			))}
+		</div>
+
+		<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-3xl p-8 md:p-10 shadow-lg">
+			<h2 class="font-serif text-2xl font-medium text-stone-900 mb-6">Envíanos un mensaje</h2>
+			<form onsubmit="enviar(event)" class="space-y-6">
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+					<div>
+						<label for="nombre" class="block text-sm font-semibold text-stone-900 mb-1.5">Nombre</label>
+						<input type="text" id="nombre" required placeholder="Tu nombre" class="w-full px-4 py-3 rounded-xl border border-stone-300 bg-white text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-700 transition-shadow" />
+					</div>
+					<div>
+						<label for="email" class="block text-sm font-semibold text-stone-900 mb-1.5">Correo electrónico</label>
+						<input type="email" id="email" required placeholder="tu@correo.com" class="w-full px-4 py-3 rounded-xl border border-stone-300 bg-white text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-700 transition-shadow" />
+					</div>
+				</div>
+				<div class="pt-3">
+					<label for="mensaje" class="block text-sm font-semibold text-stone-900 mb-1.5">Mensaje</label>
+					<textarea id="mensaje" rows="6" required placeholder="Escribe tu mensaje..." class="w-full px-4 py-3 rounded-xl border border-stone-300 bg-white text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-700 transition-shadow"></textarea>
+				</div>
+				<button type="submit" class="w-full px-8 py-4 rounded-xl text-sm font-semibold text-white bg-teal-700 hover:bg-teal-800 transition-colors cursor-pointer">Enviar mensaje</button>
+			</form>
+			<div id="envioOk" class="hidden mt-5 p-5 rounded-xl bg-teal-50 border border-teal-200 text-sm text-teal-800 font-medium flex items-center gap-3">
+				<svg class="flex-shrink-0 text-teal-700" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+				Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos pronto.
+			</div>
+		</div>
+
+	</div>
+
+</ContentLayout>
+
+<script>
+	declare global {
+		interface Window {
+			enviar: (e: Event) => void;
+		}
+	}
+
+	window.enviar = (e: Event): void => {
+		e.preventDefault();
+		const ok = document.getElementById('envioOk');
+		if (ok) {
+			ok.classList.remove('hidden');
+			ok.style.display = '';
+		}
+		const formulario = document.getElementById('nombre')?.closest('form');
+		formulario?.reset();
+	};
+</script>

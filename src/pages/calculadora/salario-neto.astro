@@ -1,0 +1,190 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../sections/Header.astro';
+import Footer from '../../sections/Footer.astro';
+---
+
+<Layout>
+	<Header />
+
+	<main class="pt-28 pb-20 max-w-[1200px] mx-auto px-6">
+		<div class="text-center mb-12">
+			<div class="font-mono text-xs uppercase tracking-widest text-teal-700 mb-3">Calculadora de Salario Neto</div>
+			<h1 class="font-serif text-4xl md:text-5xl text-stone-900 mb-3">Cuánto cobrarás realmente</h1>
+			<p class="text-lg text-stone-500 max-w-[560px] mx-auto">Descubre tu sueldo neto mensual y anual tras descontar la retención de IRPF y las cotizaciones de la Seguridad Social.</p>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+
+			<!-- FORMULARIO -->
+			<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm lg:sticky lg:top-24">
+				<div class="mb-5">
+					<label for="bruto" class="block text-sm font-semibold text-stone-900 mb-1.5">Salario bruto anual (€)</label>
+					<input type="number" id="bruto" min="0" step="100" placeholder="35.000" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="pagos" class="block text-sm font-semibold text-stone-900 mb-1.5">Nº de pagas</label>
+						<select id="pagos" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="12">12 pagas</option>
+							<option value="14">14 pagas</option>
+						</select>
+					</div>
+					<div>
+						<label for="situacion" class="block text-sm font-semibold text-stone-900 mb-1.5">Situación familiar</label>
+						<select id="situacion" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="general">General / soltero sin hijos</option>
+							<option value="familiar">Con hijos / familia numerosa</option>
+						</select>
+					</div>
+				</div>
+
+				<button onclick="calcular()" class="w-full px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-teal-700 hover:bg-teal-800 transition-colors cursor-pointer">
+					Calcular salario neto
+				</button>
+			</div>
+
+			<!-- RESULTADOS -->
+			<div>
+				<div id="placeholder" class="bg-white/70 backdrop-blur-md border border-dashed border-stone-300 rounded-2xl p-10 text-center text-stone-500">
+					Introduce tu salario bruto y pulsa <strong class="text-teal-700">Calcular</strong>.
+				</div>
+
+				<div id="resultados" style="display:none">
+					<!-- Tarjeta principal -->
+					<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm mb-5">
+						<div class="text-sm text-stone-500 mb-1">Sueldo neto mensual</div>
+						<div class="font-mono text-5xl font-semibold text-teal-700" id="netoMensual">—</div>
+						<div class="text-sm text-stone-500 mt-1" id="netoAnual"></div>
+
+						<div class="mt-6 border-t border-stone-200 pt-4 space-y-3">
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Salario bruto anual</span>
+								<span class="font-mono font-medium" id="rBruto">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Retención IRPF</span>
+								<span class="font-mono font-medium text-amber-600" id="rIrpf">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Cotización Seguridad Social</span>
+								<span class="font-mono font-medium text-amber-600" id="rSs">—</span>
+							</div>
+							<div class="flex justify-between text-sm border-t border-stone-200 pt-3">
+								<span class="text-stone-900 font-semibold">Sueldo neto anual</span>
+								<span class="font-mono font-semibold text-teal-700" id="rNetoTotal">—</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</main>
+
+	<Footer />
+</Layout>
+
+<script>
+	// Tramos IRPF (estatales) 2026 — ajusta si cambia la normativa
+	const IRPF_TRAMOS: { hasta: number; tipo: number }[] = [
+		{ hasta: 12450, tipo: 0.1900 },
+		{ hasta: 20200, tipo: 0.2400 },
+		{ hasta: 35200, tipo: 0.3000 },
+		{ hasta: 60000, tipo: 0.3700 },
+		{ hasta: 300000, tipo: 0.4500 },
+		{ hasta: Infinity, tipo: 0.4700 },
+	];
+
+	// Mínimo personal exento (simplificado)
+	const IRPF_MINIMO: Record<string, number> = {
+		general: 5550,
+		familiar: 9150,
+	};
+
+	// Tipos de cotización a la Seguridad Social (parte del trabajador)
+	const SS_CONTINGENCIA = 0.0470; // contingencias comunes 4,70 %
+	const SS_DESEMPLEO = 0.0165;    // desempleo 1,65 %
+	const SS_FORMACION = 0.0060;    // formación profesional 0,60 %
+
+	// Tope de base de cotización anual (aprox.)
+	const TOPE_COTIZACION = 54000;
+
+	const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 2 }) + ' €';
+
+	const getInput = (id: string): HTMLInputElement | null =>
+		document.getElementById(id) as HTMLInputElement | null;
+
+	const getSelect = (id: string): HTMLSelectElement | null =>
+		document.getElementById(id) as HTMLSelectElement | null;
+
+	function calcular(): void {
+		const brutoEl = getInput('bruto');
+		const pagosEl = getSelect('pagos');
+		const situacionEl = getSelect('situacion');
+		if (!brutoEl || !pagosEl || !situacionEl) return;
+
+		const bruto = parseFloat(brutoEl.value);
+		if (!bruto || bruto <= 0) return;
+
+		const pagos = parseInt(pagosEl.value, 10);
+		const situacion = situacionEl.value;
+
+		const baseCotizacion = Math.min(bruto, TOPE_COTIZACION);
+		const ss = baseCotizacion * (SS_CONTINGENCIA + SS_DESEMPLEO + SS_FORMACION);
+
+		// IRPF progresivo sobre la base tras cotizaciones
+		let irpf = 0;
+		const minimo = IRPF_MINIMO[situacion] ?? IRPF_MINIMO.general;
+		let acumulado = 0;
+		let anterior = 0;
+		const baseTramo = bruto - ss;
+		for (let i = 0; i < IRPF_TRAMOS.length; i++) {
+			const tramo = IRPF_TRAMOS[i];
+			const limiteSuperior = Math.min(tramo.hasta, baseTramo);
+			const enTramo = limiteSuperior - anterior;
+			if (enTramo > 0) {
+				// Aplicar el mínimo en el primer tramo que toque
+				const sobreMinimo = Math.max(enTramo - minimo, 0);
+				irpf += sobreMinimo * tramo.tipo;
+				acumulado += enTramo;
+			}
+			anterior = tramo.hasta;
+			if (acumulado >= baseTramo) break;
+		}
+
+		// Evitar IRPF negativo en bases muy bajas
+		if (irpf < 0) irpf = 0;
+
+		const netoAnual = bruto - ss - irpf;
+		const netoMensual = netoAnual / pagos;
+
+		setDisplay('placeholder', 'none');
+		setDisplay('resultados', '');
+		setText('netoMensual', fmt(netoMensual));
+		setText('netoAnual', pagos + ' pagas de ' + fmt(netoMensual) + ' = ' + fmt(netoAnual) + ' al año');
+		setText('rBruto', fmt(bruto));
+		setText('rIrpf', '-' + fmt(irpf) + ' (' + ((bruto ? (irpf / bruto * 100).toFixed(1) : 0)) + ' %)');
+		setText('rSs', '-' + fmt(ss) + ' (' + ((bruto ? (ss / bruto * 100).toFixed(1) : 0)) + ' %)');
+		setText('rNetoTotal', fmt(netoAnual));
+	}
+
+	function setText(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.textContent = value;
+	}
+
+	function setDisplay(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.style.display = value;
+	}
+
+	declare global {
+		interface Window {
+			calcular: () => void;
+		}
+	}
+
+	window.calcular = calcular;
+</script>

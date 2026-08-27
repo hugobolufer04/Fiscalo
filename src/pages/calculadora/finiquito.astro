@@ -1,0 +1,210 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../sections/Header.astro';
+import Footer from '../../sections/Footer.astro';
+---
+
+<Layout>
+	<Header />
+
+	<main class="pt-28 pb-20 max-w-[1200px] mx-auto px-6">
+		<div class="text-center mb-12">
+			<div class="font-mono text-xs uppercase tracking-widest text-teal-700 mb-3">Calculadora de Finiquito</div>
+			<h1 class="font-serif text-4xl md:text-5xl text-stone-900 mb-3">Cuánto te corresponde al irte</h1>
+			<p class="text-lg text-stone-500 max-w-[560px] mx-auto">Calcula el importe exacto de tu finiquito al dejar un trabajo: días trabajados, vacaciones no disfrutadas e indemnización.</p>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+
+			<!-- FORMULARIO -->
+			<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm lg:sticky lg:top-24">
+
+				<div class="mb-5">
+					<label for="salario" class="block text-sm font-semibold text-stone-900 mb-1.5">Salario bruto mensual (€)</label>
+					<input type="number" id="salario" min="0" step="50" placeholder="2.000" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="diasMes" class="block text-sm font-semibold text-stone-900 mb-1.5">Días trabajados este mes</label>
+						<input type="number" id="diasMes" min="0" max="31" step="1" placeholder="20" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					</div>
+					<div>
+						<label for="vacaciones" class="block text-sm font-semibold text-stone-900 mb-1.5">Días de vacaciones pendientes</label>
+						<input type="number" id="vacaciones" min="0" max="30" step="1" placeholder="5" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="pagasExtras" class="block text-sm font-semibold text-stone-900 mb-1.5">Pagas extraordinarias</label>
+						<select id="pagasExtras" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="0">Ninguna (prorrateadas)</option>
+							<option value="2">2 pagas (julio y navidad)</option>
+							<option value="3">3 pagas</option>
+						</select>
+					</div>
+					<div>
+						<label for="diasExtras" class="block text-sm font-semibold text-stone-900 mb-1.5">Días de paga acumulados</label>
+						<input type="number" id="diasExtras" min="0" step="1" placeholder="180" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+						<div class="text-xs text-stone-500 mt-1">Desde la última paga hasta hoy</div>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="antiguedad" class="block text-sm font-semibold text-stone-900 mb-1.5">Antigüedad (años)</label>
+						<input type="number" id="antiguedad" min="0" step="1" placeholder="5" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					</div>
+					<div>
+						<label for="indemnizacion" class="block text-sm font-semibold text-stone-900 mb-1.5">Tipo de salida</label>
+						<select id="indemnizacion" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="0">Baja voluntaria (sin indemnización)</option>
+							<option value="12">Despido improcedente (33 días/año)</option>
+							<option value="20">Despido objetivo (20 días/año)</option>
+						</select>
+						<div class="text-xs text-stone-500 mt-1">Los días por año están topeados</div>
+					</div>
+				</div>
+
+				<button onclick="calcular()" class="w-full px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-teal-700 hover:bg-teal-800 transition-colors cursor-pointer">
+					Calcular finiquito
+				</button>
+			</div>
+
+			<!-- RESULTADOS -->
+			<div>
+				<div id="placeholder" class="bg-white/70 backdrop-blur-md border border-dashed border-stone-300 rounded-2xl p-10 text-center text-stone-500">
+					Introduce tus datos laborales y pulsa <strong class="text-teal-700">Calcular</strong>.
+				</div>
+
+				<div id="resultados" style="display:none">
+					<!-- Total -->
+					<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm mb-5">
+						<div class="text-sm text-stone-500 mb-1">Finiquito total</div>
+						<div class="font-mono text-5xl font-semibold text-teal-700" id="totalFiniquito">—</div>
+						<div class="text-sm text-stone-500 mt-1">Bruto antes de impuestos</div>
+
+						<div class="mt-6 space-y-3">
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Salario de los días del mes</span>
+								<span class="font-mono font-medium" id="rSalario">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Vacaciones no disfrutadas</span>
+								<span class="font-mono font-medium" id="rVacaciones">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Parte proporcional de pagas extra</span>
+								<span class="font-mono font-medium" id="rPagas">—</span>
+							</div>
+							<div class="flex justify-between text-sm" id="rIndemRow">
+								<span class="text-stone-500">Indemnización</span>
+								<span class="font-mono font-medium text-amber-600" id="rIndemnizacion">—</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Explicación -->
+					<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm">
+						<h3 class="font-serif text-xl font-medium text-stone-900 mb-3">Qué es el finiquito</h3>
+						<p class="text-sm text-stone-500 leading-relaxed">El finiquito es el pago de las cantidades pendientes al finalizar la relación laboral: salario de los días trabajados, vacaciones no disfrutadas y la parte proporcional de las pagas extraordinarias. No incluye la indemnización por despido, que se calcula aparte según el tipo de despido y la antigüedad.</p>
+						<div class="mt-4 flex items-center gap-2 text-xs text-amber-600">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+							Estos cálculos son orientativos. Consulta tu convenio colectivo para los importes exactos y bruto del convenio.
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</main>
+
+	<Footer />
+</Layout>
+
+<script>
+	const getInput = (id: string): HTMLInputElement | null =>
+		document.getElementById(id) as HTMLInputElement | null;
+
+	const getSelect = (id: string): HTMLSelectElement | null =>
+		document.getElementById(id) as HTMLSelectElement | null;
+
+	function setText(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.textContent = value;
+	}
+
+	function setDisplay(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.style.display = value;
+	}
+
+	const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 2 }) + ' €';
+
+	function calcular(): void {
+		const salarioEl = getInput('salario');
+		const diasMesEl = getInput('diasMes');
+		const vacacionesEl = getInput('vacaciones');
+		const pagasExtrasEl = getSelect('pagasExtras');
+		const diasExtrasEl = getInput('diasExtras');
+		const antiguedadEl = getInput('antiguedad');
+		const indemnizacionEl = getSelect('indemnizacion');
+		if (!salarioEl || !diasMesEl || !vacacionesEl || !pagasExtrasEl || !diasExtrasEl || !antiguedadEl || !indemnizacionEl) return;
+
+		const salario = parseFloat(salarioEl.value);
+		if (!salario || salario <= 0) return;
+
+		const diasMes = parseFloat(diasMesEl.value) || 0;
+		const vacaciones = parseFloat(vacacionesEl.value) || 0;
+		const pagasExtras = parseInt(pagasExtrasEl.value, 10);
+		const diasExtras = parseFloat(diasExtrasEl.value) || 0;
+		const antiguedad = parseFloat(antiguedadEl.value) || 0;
+		const tipoSalida = parseInt(indemnizacionEl.value, 10);
+
+		// Salario diario (30 días/mes de forma simplificada)
+		const salarioDiario = salario / 30;
+
+		// 1. Salario de los días trabajados en el mes
+		const salarioDias = salarioDiario * diasMes;
+
+		// 2. Vacaciones no disfrutadas (30 días al año)
+		const pagaVacacion = salarioDiario * vacaciones;
+
+		// 3. Parte proporcional de pagas extras
+		// Se acumulan en 180 días (media anual) por cada paga
+		const pagaExtras = pagasExtras > 0 ? (salario / 365) * pagasExtras * diasExtras : 0;
+
+		// 4. Indemnización por despido
+		const diasPorAnio = tipoSalida;
+		const maxMensualidades = 12; // tope de indemnización (días/año según tipo)
+		let indemnizacion = 0;
+		if (diasPorAnio > 0) {
+			const topeDias = diasPorAnio * 12; // tope: 33*12 = 396 días máx, etc.
+			const diasIndemnizacion = Math.min(antiguedad * diasPorAnio, topeDias);
+			indemnizacion = salarioDiario * diasIndemnizacion;
+		}
+
+		const total = salarioDias + pagaVacacion + pagaExtras + indemnizacion;
+
+		setDisplay('placeholder', 'none');
+		setDisplay('resultados', '');
+
+		setText('totalFiniquito', fmt(total));
+		setText('rSalario', fmt(salarioDias));
+		setText('rVacaciones', fmt(pagaVacacion));
+		setText('rPagas', fmt(pagaExtras));
+		setText('rIndemnizacion', fmt(indemnizacion));
+
+		const row = document.getElementById('rIndemRow');
+		if (row) row.style.display = diasPorAnio > 0 ? '' : 'none';
+	}
+
+	declare global {
+		interface Window {
+			calcular: () => void;
+		}
+	}
+
+	window.calcular = calcular;
+</script>

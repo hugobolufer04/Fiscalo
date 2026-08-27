@@ -1,0 +1,240 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../sections/Header.astro';
+import Footer from '../../sections/Footer.astro';
+---
+
+<Layout>
+	<Header />
+
+	<main class="pt-28 pb-20 max-w-[1200px] mx-auto px-6">
+		<div class="text-center mb-12">
+			<div class="font-mono text-xs uppercase tracking-widest text-teal-700 mb-3">Calculadora de Plusvalía Municipal</div>
+			<h1 class="font-serif text-4xl md:text-5xl text-stone-900 mb-3">Cuánto pagarás al vender tu piso</h1>
+			<p class="text-lg text-stone-500 max-w-[560px] mx-auto">Estima el impuesto sobre el incremento del valor del terreno (IIVTNU) al vender una propiedad, según la normativa vigente.</p>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+
+			<!-- FORMULARIO -->
+			<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm lg:sticky lg:top-24">
+
+				<div class="mb-5">
+					<label for="catastral" class="block text-sm font-semibold text-stone-900 mb-1.5">Valor catastral del suelo (€)</label>
+					<input type="number" id="catastral" min="0" step="1000" placeholder="60.000" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					<div class="text-xs text-stone-500 mt-1">Lo encontrarás en tu recibo del IBI</div>
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="anioCompra" class="block text-sm font-semibold text-stone-900 mb-1.5">Año de compra</label>
+						<input type="number" id="anioCompra" min="1950" max="2030" step="1" placeholder="2010" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					</div>
+					<div>
+						<label for="anioVenta" class="block text-sm font-semibold text-stone-900 mb-1.5">Año de venta</label>
+						<input type="number" id="anioVenta" min="1950" max="2030" step="1" placeholder="2026" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="gravamen" class="block text-sm font-semibold text-stone-900 mb-1.5">Tipo de gravamen (%)</label>
+						<input type="number" id="gravamen" min="0" max="30" step="0.1" placeholder="29" value="29" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+						<div class="text-xs text-stone-500 mt-1">Lo fija cada ayuntamiento (suele ser ~29 %)</div>
+					</div>
+					<div>
+						<label for="metodo" class="block text-sm font-semibold text-stone-900 mb-1.5">Método de cálculo</label>
+						<select id="metodo" onchange="actualizarMetodo()" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="objetivo" selected>Objetivo (coeficientes)</option>
+							<option value="real">Real (diferencia de precios)</option>
+						</select>
+					</div>
+				</div>
+
+				<div id="realFields" style="display:none" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="precioCompra" class="block text-sm font-semibold text-stone-900 mb-1.5">Precio de compra (€)</label>
+						<input type="number" id="precioCompra" min="0" step="1000" placeholder="150.000" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					</div>
+					<div>
+						<label for="precioVenta" class="block text-sm font-semibold text-stone-900 mb-1.5">Precio de venta (€)</label>
+						<input type="number" id="precioVenta" min="0" step="1000" placeholder="200.000" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+					</div>
+				</div>
+
+				<button onclick="calcular()" class="w-full px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-teal-700 hover:bg-teal-800 transition-colors cursor-pointer">
+					Calcular plusvalía
+				</button>
+			</div>
+
+			<!-- RESULTADOS -->
+			<div>
+				<div id="placeholder" class="bg-white/70 backdrop-blur-md border border-dashed border-stone-300 rounded-2xl p-10 text-center text-stone-500">
+					Introduce el valor catastral, los años y el tipo de gravamen, y pulsa <strong class="text-teal-700">Calcular</strong>.
+				</div>
+
+				<div id="resultados" style="display:none">
+					<!-- Total -->
+					<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm mb-5">
+						<div class="text-sm text-stone-500 mb-1">Plusvalía a pagar</div>
+						<div class="font-mono text-5xl font-semibold text-teal-700" id="totalPlusvalia">—</div>
+						<div class="text-sm text-stone-500 mt-1" id="metodoUsado"></div>
+
+						<div class="mt-6 space-y-3">
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Base imponible</span>
+								<span class="font-mono font-medium" id="rBase">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Incremento de valor</span>
+								<span class="font-mono font-medium text-amber-600" id="rIncremento">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Tipo de gravamen</span>
+								<span class="font-mono font-medium" id="rTipo">—</span>
+							</div>
+							<div class="flex justify-between text-sm border-t border-stone-200 pt-3">
+								<span class="text-stone-900 font-semibold">Cuota a ingresar</span>
+								<span class="font-mono font-semibold text-teal-700" id="rCuota">—</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Explicación -->
+					<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm">
+						<h3 class="font-serif text-xl font-medium text-stone-900 mb-3">Cómo funciona</h3>
+						<p class="text-sm text-stone-500 leading-relaxed mb-4">La plusvalía municipal grava el incremento del valor del <strong>terreno</strong> (no del edificio). El ayuntamiento aplica coeficientes por años desde la compra, o puedes optar por el método real si la venta fue a pérdida.</p>
+						<div class="space-y-2">
+							<div class="flex justify-between text-sm"><span class="text-stone-500">Años entre compra y venta</span><span class="font-mono" id="rAnios">—</span></div>
+							<div class="flex justify-between text-sm"><span class="text-stone-500">Coeficiente aplicado</span><span class="font-mono" id="rCoef">—</span></div>
+						</div>
+						<div class="mt-4 flex items-center gap-2 text-xs text-amber-600">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+							Consulta la ordenanza fiscal de tu ayuntamiento, ya que cada municipio fija sus coeficientes y tipo de gravamen.
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</main>
+
+	<Footer />
+</Layout>
+
+<script>
+	// Coeficientes máximos por antigüedad (normativa estatal). El ayuntamiento fija los suyos.
+	const COEFICIENTES: { desde: number; coef: number }[] = [
+		{ desde: 1, coef: 0.14 },
+		{ desde: 2, coef: 0.13 },
+		{ desde: 3, coef: 0.12 },
+		{ desde: 4, coef: 0.11 },
+		{ desde: 5, coef: 0.10 },
+		{ desde: 6, coef: 0.09 },
+		{ desde: 7, coef: 0.09 },
+		{ desde: 8, coef: 0.08 },
+		{ desde: 9, coef: 0.08 },
+		{ desde: 10, coef: 0.08 },
+		{ desde: 11, coef: 0.08 },
+		{ desde: 12, coef: 0.08 },
+		{ desde: 13, coef: 0.08 },
+		{ desde: 14, coef: 0.08 },
+		{ desde: 15, coef: 0.08 },
+		{ desde: 16, coef: 0.08 },
+		{ desde: 17, coef: 0.08 },
+		{ desde: 18, coef: 0.08 },
+		{ desde: 19, coef: 0.08 },
+		{ desde: 20, coef: 0.08 },
+	];
+
+	const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 2 }) + ' €';
+
+	const getInput = (id: string): HTMLInputElement | null =>
+		document.getElementById(id) as HTMLInputElement | null;
+
+	const getSelect = (id: string): HTMLSelectElement | null =>
+		document.getElementById(id) as HTMLSelectElement | null;
+
+	function setText(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.textContent = value;
+	}
+
+	function setDisplay(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.style.display = value;
+	}
+
+	function actualizarMetodo(): void {
+		const metodo = getSelect('metodo');
+		const real = document.getElementById('realFields');
+		if (!metodo || !real) return;
+		real.style.display = metodo.value === 'real' ? '' : 'none';
+	}
+
+	function coeficientePorAnios(anios: number): number {
+		if (anios <= 0) return COEFICIENTES[0].coef;
+		if (anios >= 20) return COEFICIENTES[COEFICIENTES.length - 1].coef;
+		const fila = COEFICIENTES.find((c) => c.desde <= anios && (c.desde + 1 > anios || true));
+		return fila ? fila.coef : COEFICIENTES[COEFICIENTES.length - 1].coef;
+	}
+
+	function calcular(): void {
+		const catastralEl = getInput('catastral');
+		const anioCompraEl = getInput('anioCompra');
+		const anioVentaEl = getInput('anioVenta');
+		const gravamenEl = getInput('gravamen');
+		const metodoEl = getSelect('metodo');
+		const precioCompraEl = getInput('precioCompra');
+		const precioVentaEl = getInput('precioVenta');
+		if (!catastralEl || !anioCompraEl || !anioVentaEl || !gravamenEl || !metodoEl || !precioCompraEl || !precioVentaEl) return;
+
+		const catastral = parseFloat(catastralEl.value);
+		if (!catastral || catastral <= 0) return;
+
+		const anioCompra = parseInt(anioCompraEl.value, 10);
+		const anioVenta = parseInt(anioVentaEl.value, 10);
+		const gravamen = parseFloat(gravamenEl.value) || 0;
+		const metodo = metodoEl.value;
+
+		const anios = Math.max(Math.min(anioVenta - anioCompra, 20), 0);
+
+		let baseImponible: number;
+		if (metodo === 'real') {
+			// Método real: incremento sobre el valor del suelo = proporción del suelo sobre el total
+			const precioCompra = parseFloat(precioCompraEl.value) || 0;
+			const precioVenta = parseFloat(precioVentaEl.value) || 0;
+			const incrementoTotal = Math.max(precioVenta - precioCompra, 0);
+			// Estimación: el suelo suele suponer ~50 % del valor catastral total
+			baseImponible = incrementoTotal * 0.5;
+		} else {
+			// Método objetivo: valor catastral del suelo x coeficiente
+			const coef = coeficientePorAnios(anios);
+			baseImponible = catastral * coef;
+		}
+
+		const cuota = baseImponible * (gravamen / 100);
+
+		setDisplay('placeholder', 'none');
+		setDisplay('resultados', '');
+
+		setText('totalPlusvalia', fmt(cuota));
+		setText('metodoUsado', metodo === 'real' ? 'Método real (diferencia de precios)' : 'Método objetivo (coeficientes)');
+		setText('rBase', fmt(baseImponible));
+		setText('rIncremento', fmt(baseImponible));
+		setText('rTipo', gravamen.toFixed(1) + ' %');
+		setText('rCuota', fmt(cuota));
+		setText('rAnios', String(anios) + ' años');
+		setText('rCoef', metodo === 'real' ? '—' : (coeficientePorAnios(anios) * 100).toFixed(1) + ' %');
+	}
+
+	declare global {
+		interface Window {
+			calcular: () => void;
+			actualizarMetodo: () => void;
+		}
+	}
+
+	window.calcular = calcular;
+	window.actualizarMetodo = actualizarMetodo;
+</script>

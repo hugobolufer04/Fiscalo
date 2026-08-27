@@ -1,0 +1,64 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const articulos = [
+	{
+		titulo: 'Cómo calcular tu salario neto a partir del bruto',
+		fecha: '12 de agosto de 2026',
+		lectura: '5 min',
+		categoria: 'Salario',
+		descripcion: 'Te explicamos paso a paso qué se descuenta de tu salario bruto: cotizaciones a la Seguridad Social y retención del IRPF.',
+		href: '/blog/salario-neto-bruto-net',
+		icon: 'M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
+	},
+	{
+		titulo: 'Hipoteca fija o variable: cuál te conviene en 2026',
+		fecha: '5 de agosto de 2026',
+		lectura: '4 min',
+		categoria: 'Hipotecas',
+		descripcion: 'Compara los tipos fijos, variables y mixtos y descubre cuál se adapta mejor a tu perfil según el contexto actual de tipos.',
+		href: '/blog/hipoteca-fija-o-variable',
+		icon: 'M9 22V7l10 10M9 7v12M9 2h12l-3 3-3-3z',
+	},
+	{
+		titulo: 'Guía rápida del IRPF: tramos y retenciones 2026',
+		fecha: '28 de julio de 2026',
+		lectura: '6 min',
+		categoria: 'Impuestos',
+		descripcion: 'Repasamos los tramos del IRPF, el mínimo personal y cómo afecta a tu nómina la retención que aplica tu empresa.',
+		href: '/guia-irpf-2026',
+		icon: 'M4 20h16M6 16l4-12 4 12M18 16l-2-6',
+	},
+];
+---
+
+<ContentLayout
+	label="Blog"
+	title="Educación financiera"
+	subtitle="Artículos sencillos para entender mejor tus finanzas, los impuestos y las decisiones de dinero."
+>
+
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+		{articulos.map((a, i) => (
+			<a href={a.href} class={`group block bg-white/70 backdrop-blur-md border border-stone-200 rounded-3xl p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:border-teal-400 no-underline ${i > 0 ? `animate-fade-in-up animate-delay-${i * 100}` : 'animate-fade-in-up'}`}>
+				<div class="w-12 h-12 rounded-xl bg-teal-50 group-hover:bg-teal-700 flex items-center justify-center mb-5 transition-colors duration-300">
+					<svg class="w-6 h-6 text-teal-700 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d={a.icon}/></svg>
+				</div>
+				<div class="flex items-center gap-2 text-xs font-medium mb-3">
+					<span class="text-teal-700 uppercase tracking-wide">{a.categoria}</span>
+					<span class="text-stone-400">•</span>
+					<span class="text-stone-400">{a.fecha}</span>
+				</div>
+				<h2 class="font-serif text-lg font-medium text-stone-900 group-hover:text-teal-700 transition-colors mb-2 leading-snug">{a.titulo}</h2>
+				<p class="text-sm text-stone-500 leading-relaxed mb-5">{a.descripcion}</p>
+				<div class="flex items-center justify-between pt-4 border-t border-stone-100">
+					<span class="text-xs text-stone-400">{a.lectura} de lectura</span>
+					<span class="inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 group-hover:gap-2.5 transition-all">Leer
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+					</span>
+				</div>
+			</a>
+		))}
+	</div>
+
+</ContentLayout>

@@ -1,0 +1,258 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../sections/Header.astro';
+import Footer from '../../sections/Footer.astro';
+---
+
+<Layout>
+	<Header />
+
+	<main class="pt-28 pb-20 max-w-[1200px] mx-auto px-6">
+		<div class="text-center mb-12">
+			<div class="font-mono text-xs uppercase tracking-widest text-teal-700 mb-3">Calculadora de IRPF</div>
+			<h1 class="font-serif text-4xl md:text-5xl text-stone-900 mb-3">Cuánto retendrás en tu nómina</h1>
+			<p class="text-lg text-stone-500 max-w-[560px] mx-auto">Calcula tu retención del IRPF según tus ingresos y tu situación personal, con los tramos actualizados para 2026.</p>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+
+			<!-- FORMULARIO -->
+			<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm lg:sticky lg:top-24">
+				<div class="mb-5">
+					<label for="bruto" class="block text-sm font-semibold text-stone-900 mb-1.5">Sueldo bruto anual (€)</label>
+					<input type="number" id="bruto" min="0" step="100" placeholder="35.000" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700" />
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="situacion" class="block text-sm font-semibold text-stone-900 mb-1.5">Situación familiar</label>
+						<select id="situacion" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="soltero">Soltero / sin hijos</option>
+							<option value="casado1">Casado/a, cónyuge sin ingresos</option>
+							<option value="casado2">Casado/a, cónyuge con ingresos</option>
+							<option value="hijos">Familia con hijos a cargo</option>
+						</select>
+					</div>
+					<div>
+						<label for="pagas" class="block text-sm font-semibold text-stone-900 mb-1.5">Nº de pagas</label>
+						<select id="pagas" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="12">12 pagas</option>
+							<option value="14">14 pagas</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+					<div>
+						<label for="edad" class="block text-sm font-semibold text-stone-900 mb-1.5">Edad</label>
+						<select id="edad" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="normal">Menor de 65</option>
+							<option value="mayor65">65 años o más</option>
+						</select>
+					</div>
+					<div>
+						<label for="minusvalia" class="block text-sm font-semibold text-stone-900 mb-1.5">Discapacidad</label>
+						<select id="minusvalia" class="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-stone-900 focus:outline-none focus:ring-2 focus:ring-teal-700">
+							<option value="ninguna">Ninguna</option>
+							<option value="33">33 % o más</option>
+							<option value="65">65 % o más</option>
+						</select>
+					</div>
+				</div>
+
+				<button onclick="calcular()" class="w-full px-8 py-3.5 rounded-lg text-sm font-semibold text-white bg-teal-700 hover:bg-teal-800 transition-colors cursor-pointer">
+					Calcular IRPF
+				</button>
+			</div>
+
+			<!-- RESULTADOS -->
+			<div>
+				<div id="placeholder" class="bg-white/70 backdrop-blur-md border border-dashed border-stone-300 rounded-2xl p-10 text-center text-stone-500">
+					Introduce tu sueldo bruto y tu situación personal, y pulsa <strong class="text-teal-700">Calcular</strong>.
+				</div>
+
+				<div id="resultados" style="display:none">
+					<!-- Tarjeta principal -->
+					<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm mb-5">
+						<div class="text-sm text-stone-500 mb-1">Retención IRPF</div>
+						<div class="flex items-baseline gap-2">
+							<span class="font-mono text-5xl font-semibold text-amber-600" id="porcentaje">—</span>
+							<span class="text-stone-500 text-sm">%</span>
+						</div>
+						<div class="text-sm text-stone-500 mt-1" id="retencionAnual"></div>
+
+						<div class="mt-6 border-t border-stone-200 pt-4 space-y-3">
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Sueldo bruto anual</span>
+								<span class="font-mono font-medium" id="rBruto">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Retención anual</span>
+								<span class="font-mono font-medium text-amber-600" id="rRetencion">—</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-stone-500">Retención mensual</span>
+								<span class="font-mono font-medium" id="rMensual">—</span>
+							</div>
+							<div class="flex justify-between text-sm border-t border-stone-200 pt-3">
+								<span class="text-stone-900 font-semibold">Sueldo neto mensual</span>
+								<span class="font-mono font-semibold text-teal-700" id="rNeto">—</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Detalle de tramos -->
+					<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-8 shadow-sm">
+						<h3 class="font-serif text-xl font-medium text-stone-900 mb-4">Cómo se calcula</h3>
+						<div class="text-sm text-stone-500 mb-4">El IRPF es progresivo: cada tramo de tu sueldo tributa a un tipo distinto. Tu retención media es el cociente entre el total retenido y tu salario bruto.</div>
+						<div class="overflow-x-auto">
+							<table class="w-full text-sm">
+								<thead>
+									<tr class="text-left text-xs uppercase tracking-wider text-stone-500 border-b border-stone-200">
+										<th class="py-2 pr-3">Tramo</th>
+										<th class="py-2 pr-3 text-right">Hasta (€)</th>
+										<th class="py-2 text-right">Tipo</th>
+									</tr>
+								</thead>
+								<tbody id="tramosBody"></tbody>
+							</table>
+						</div>
+						<div class="text-xs text-stone-400 mt-4">Tramos estatales y mínimos personales simplificados para 2026. El importe real puede variar según Comunidad Autónoma y deducciones.</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</main>
+
+	<Footer />
+</Layout>
+
+<script>
+	// Tramos IRPF (estatales) 2026 — ajusta si cambia la normativa
+	const IRPF_TRAMOS: { hasta: number; tipo: number }[] = [
+		{ hasta: 12450, tipo: 0.1900 },
+		{ hasta: 20200, tipo: 0.2400 },
+		{ hasta: 35200, tipo: 0.3000 },
+		{ hasta: 60000, tipo: 0.3700 },
+		{ hasta: 300000, tipo: 0.4500 },
+		{ hasta: Infinity, tipo: 0.4700 },
+	];
+
+	// Mínimo personal exento según situación (simplificado)
+	const MINIMO: Record<string, number> = {
+		soltero: 5550,
+		casado1: 9150,
+		casado2: 5550,
+		hijos: 10050,
+	};
+	const EXTRA_65 = 1150;
+	const EXTRA_75 = 1400;
+	const EXTRA_MINUSVALIA_33 = 3000;
+	const EXTRA_MINUSVALIA_65 = 9000;
+
+	const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 2 }) + ' €';
+
+	const getInput = (id: string): HTMLInputElement | null =>
+		document.getElementById(id) as HTMLInputElement | null;
+
+	const getSelect = (id: string): HTMLSelectElement | null =>
+		document.getElementById(id) as HTMLSelectElement | null;
+
+	function setText(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.textContent = value;
+	}
+
+	function setDisplay(id: string, value: string): void {
+		const el = document.getElementById(id);
+		if (el) el.style.display = value;
+	}
+
+	// Impuesto progresivo sobre una cantidad aplicando los tramos
+	function impuestoSobre(cantidad: number): number {
+		if (cantidad <= 0) return 0;
+		let resultado = 0;
+		let anterior = 0;
+		for (let i = 0; i < IRPF_TRAMOS.length; i++) {
+			const tramo = IRPF_TRAMOS[i];
+			const limiteSup = Math.min(tramo.hasta, cantidad);
+			const enTramo = limiteSup - anterior;
+			if (enTramo > 0) resultado += enTramo * tramo.tipo;
+			anterior = tramo.hasta;
+			if (cantidad <= tramo.hasta) break;
+		}
+		return resultado;
+	}
+
+	// Cuota IRPF tras restar el mínimo personal exento
+	function cuotaIrpf(base: number, minimo: number): number {
+		return Math.max(impuestoSobre(base) - impuestoSobre(minimo), 0);
+	}
+
+	function calcular(): void {
+		const brutoEl = getInput('bruto');
+		const situacionEl = getSelect('situacion');
+		const pagasEl = getSelect('pagas');
+		const edadEl = getSelect('edad');
+		const minusvaliaEl = getSelect('minusvalia');
+		if (!brutoEl || !situacionEl || !pagasEl || !edadEl || !minusvaliaEl) return;
+
+		const bruto = parseFloat(brutoEl.value);
+		if (!bruto || bruto <= 0) return;
+
+		const situacion = situacionEl.value;
+		const pagas = parseInt(pagasEl.value, 10);
+		const edad = edadEl.value;
+		const minusvalia = minusvaliaEl.value;
+
+		// Base de cotización (se restan las cotizaciones de SS antes de aplicar IRPF)
+		const base = bruto * 0.9357; // aprox. -6,43 % de cotizaciones
+
+		// Mínimo personal + reducciones por edad y discapacidad
+		let minimo = MINIMO[situacion] ?? MINIMO.soltero;
+		if (edad !== 'normal') minimo += EXTRA_65;
+		if (minusvalia === '33') minimo += EXTRA_MINUSVALIA_33;
+		else if (minusvalia === '65') minimo += EXTRA_MINUSVALIA_65;
+
+		const retencion = cuotaIrpf(base, minimo);
+		const porcentaje = bruto > 0 ? (retencion / bruto) * 100 : 0;
+		const mensual = retencion / 12;
+		const netoMensual = bruto / 12 - retencion / pagas;
+
+		setDisplay('placeholder', 'none');
+		setDisplay('resultados', '');
+
+		setText('porcentaje', porcentaje.toFixed(1));
+		setText('retencionAnual', pagas + ' pagas · retención anual de ' + fmt(retencion) + ' = ' + fmt(mensual) + '/mes');
+		setText('rBruto', fmt(bruto));
+		setText('rRetencion', fmt(retencion) + ' (' + porcentaje.toFixed(1) + ' %)');
+		setText('rMensual', fmt(retencion / pagas));
+		setText('rNeto', fmt(netoMensual));
+
+		// Rellenar la tabla de tramos
+		const tbody = document.getElementById('tramosBody');
+		if (tbody) {
+			tbody.innerHTML = '';
+			for (let i = 0; i < IRPF_TRAMOS.length; i++) {
+				const tramo = IRPF_TRAMOS[i];
+				const tr = document.createElement('tr');
+				tr.className = 'border-b border-stone-100 last:border-0';
+				const hasta = tramo.hasta === Infinity ? 'En adelante' : fmt(tramo.hasta).replace(' €', '');
+				tr.innerHTML =
+					'<td class="py-2 pr-3">Tramo ' + (i + 1) + '</td>' +
+					'<td class="py-2 pr-3 font-mono text-right">' + hasta + ' €</td>' +
+					'<td class="py-2 font-mono text-right">' + (tramo.tipo * 100).toFixed(1) + ' %</td>';
+				tbody.appendChild(tr);
+			}
+		}
+	}
+
+	declare global {
+		interface Window {
+			calcular: () => void;
+		}
+	}
+
+	window.calcular = calcular;
+</script>

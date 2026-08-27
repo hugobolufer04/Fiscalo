@@ -1,0 +1,78 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const tramos = [
+	{ hasta: '12.450 €', tipo: '19 %' },
+	{ hasta: '20.200 €', tipo: '24 %' },
+	{ hasta: '35.200 €', tipo: '30 %' },
+	{ hasta: '60.000 €', tipo: '37 %' },
+	{ hasta: '300.000 €', tipo: '45 %' },
+	{ hasta: 'En adelante', tipo: '47 %' },
+];
+
+const bloques = [
+	{
+		titulo: '¿Qué es el IRPF?',
+		texto: 'El Impuesto sobre la Renta de las Personas Físicas (IRPF) es un tributo progresivo que grava la renta de los contribuyentes. En el caso de los trabajadores por cuenta ajena, se aplica de forma anticipada a través de las retenciones que descuenta la empresa cada mes en la nómina.',
+		icon: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2zm0-8h-2V7h2z',
+	},
+	{
+		titulo: 'El mínimo personal',
+		texto: 'Antes de aplicar los tramos, se resta del salario bruto el mínimo personal y familiar, la parte de la renta que no tributa. Su cuantía depende de tu situación: mayor para quienes tienen hijos a cargo, mayores de 65 o con discapacidad.',
+		icon: 'M22 11.08V12a10 10 0 1 1-5.93-9.14M16 4h6v6M10 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm8-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+	},
+	{
+		titulo: 'Cómo afecta a tu nómina',
+		texto: 'La retención es el porcentaje que tu empresa aplica a cada paga y que se ingresa a Hacienda por adelantado. Con tu sueldo y situación personal puedes estimar cuánto se te retendrá cada mes.',
+		icon: 'M21 21V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14m18 0H3M7 11h4m-4 4h6m-9 6h18',
+	},
+];
+---
+
+<ContentLayout
+	label="Guía"
+	title="Guía del IRPF 2026"
+	subtitle="Entiende los tramos del impuesto, el mínimo personal y cómo afecta a tu nómina."
+>
+
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+		{bloques.map((b) => (
+			<div class="group bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-teal-400">
+				<div class="w-10 h-10 flex-shrink-0 rounded-xl bg-teal-50 group-hover:bg-teal-700 flex items-center justify-center mb-4 transition-colors duration-300">
+					<svg class="w-5 h-5 text-teal-700 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={b.icon}/></svg>
+				</div>
+				<h2 class="font-serif text-lg font-medium text-stone-900 mb-2">{b.titulo}</h2>
+				<p class="text-sm text-stone-500 leading-relaxed">{b.texto}</p>
+			</div>
+		))}
+	</div>
+
+	<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-3xl p-8 md:p-10 shadow-sm mb-10">
+		<h2 class="font-serif text-2xl font-medium text-stone-900 mb-3">Tramos estatales 2026</h2>
+		<p class="text-sm text-stone-500 mb-10">El IRPF se aplica por tramos: cada parte de tu renta tributa al tipo que le corresponde. Esto hace que el impuesto sea progresivo.</p>
+		<div class="overflow-x-auto rounded-2xl border border-stone-200">
+			<table class="w-full text-sm">
+				<thead>
+					<tr class="text-left bg-stone-50 border-b border-stone-200 text-xs uppercase tracking-wider text-stone-500">
+						<th class="py-4 px-6">Base imponible hasta</th>
+						<th class="py-4 px-6">Tipo</th>
+					</tr>
+				</thead>
+				<tbody>
+					{tramos.map((t) => (
+						<tr class="border-b border-stone-100 last:border-0 hover:bg-teal-50/40 transition-colors">
+							<td class="py-3.5 px-6 text-stone-600">{t.hasta}</td>
+							<td class="py-3.5 px-6 font-mono font-medium text-teal-700">{t.tipo}</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="bg-teal-50 border border-teal-200 rounded-2xl p-7 flex items-start gap-4 mt-4">
+		<svg class="flex-shrink-0 text-teal-700 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+		<p class="text-sm text-teal-800 leading-relaxed"><strong>Calcúlalo:</strong> usa nuestra <a href="/calculadora/irpf" class="text-teal-700 underline hover:text-teal-800">calculadora de IRPF</a> para conocer tu retención aproximada según tus ingresos y situación.</p>
+	</div>
+
+</ContentLayout>

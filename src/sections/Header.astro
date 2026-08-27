@@ -1,28 +1,89 @@
-<header class="ani fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 animate-fade-in-down" id="navbar">
-    <nav class="flex items-center justify-between max-w-[1200px] mx-auto px-6">
-        <a href="/" class="font-serif text-xl font-semibold text-stone-900 tracking-tight no-underline">
-            <span>Fis</span>
-            <span class="text-teal-700 animate-pulsing animate-duration-[3000ms]">calo</span>
-        </a>
-        <ul class="flex items-center gap-7 list-none">
-            <li><a href="#calculadoras" class="text-sm font-medium text-stone-600 hover:text-stone-900 no-underline">Calculadoras</a></li>
-            <li><a href="#hipotecas" class="text-sm font-medium text-stone-600 hover:text-stone-900 no-underline">Hipotecas</a></li>
-            <li><a href="#irpf" class="text-sm font-medium text-stone-600 hover:text-stone-900 no-underline">IRPF</a></li>
-            <li><a href="#salario-neto" class="text-sm font-medium text-stone-600 hover:text-stone-900 no-underline">Salario Neto</a></li>
-        </ul>
-    </nav>
+---
+const pathname = Astro.url.pathname;
+
+const calculadoras = [
+	{ href: '/calculadora/salario-neto', nombre: 'Salario Neto' },
+	{ href: '/calculadora/irpf', nombre: 'IRPF' },
+	{ href: '/calculadora/hipoteca', nombre: 'Hipotecas' },
+	{ href: '/calculadora/finiquito', nombre: 'Finiquito' },
+	{ href: '/calculadora/plusvalia', nombre: 'Plusvalía' },
+	{ href: '/calculadora/rentabilidad', nombre: 'Rentabilidad' },
+];
+
+const esActiva = (ruta: string) => pathname === ruta || pathname.startsWith(ruta + '/');
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 animate-fade-in-down" id="navbar">
+	<nav class="flex items-center justify-between max-w-[1200px] mx-auto px-6">
+		<a href="/" class="font-serif text-xl font-semibold text-stone-900 tracking-tight no-underline">
+			<span>Fis</span>
+			<span class="text-teal-700 animate-pulsing animate-duration-[3000ms]">calo</span>
+		</a>
+
+		<ul class="hidden xl:flex items-center gap-5 list-none">
+			{calculadoras.map((c) => (
+				<li>
+					<a
+						href={c.href}
+						class={`text-sm font-medium no-underline transition-colors ${esActiva(c.href) ? 'text-teal-700' : 'text-stone-600 hover:text-stone-900'}`}
+					>{c.nombre}</a>
+				</li>
+			))}
+		</ul>
+
+		<button class="lg:hidden p-2 rounded-lg text-stone-700 hover:text-stone-900 hover:bg-stone-100 transition-colors" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">
+			<svg id="iconOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+			<svg id="iconClose" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+		</button>
+	</nav>
+
+	<div class="lg:hidden overflow-hidden transition-all duration-300 max-h-0" id="mobileMenu">
+		<div class="bg-white border-t border-stone-200 px-6 py-4 shadow-md">
+			{calculadoras.map((c) => (
+				<a
+					href={c.href}
+					class={`block py-2.5 text-sm font-medium no-underline transition-colors ${esActiva(c.href) ? 'text-teal-700' : 'text-stone-700 hover:text-stone-900'}`}
+				>{c.nombre}</a>
+			))}
+		</div>
+	</div>
 </header>
 
+<style>
+	header {
+		background: rgba(247, 244, 239, 0.9);
+		-webkit-backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+	}
+</style>
+
 <script>
-  const navbar = document.getElementById('navbar');
+	const navbar = document.getElementById('navbar');
+	const menuBtn = document.getElementById('menuBtn');
+	const mobileMenu = document.getElementById('mobileMenu') as HTMLElement | null;
+	const iconOpen = document.getElementById('iconOpen');
+	const iconClose = document.getElementById('iconClose');
 
-  function handleScroll() {
-    if (window.scrollY > 40) {
-      navbar?.classList.add('bg-[#f7f4ef]/80', 'backdrop-blur-md', 'shadow-sm');
-    } else {
-      navbar?.classList.remove('bg-[#f7f4ef]/80', 'backdrop-blur-md', 'shadow-sm');
-    }
-  }
+	let menuAbierto = false;
 
-  window.addEventListener('scroll', handleScroll);
+	function abrirMenu(abierto: boolean): void {
+		menuAbierto = abierto;
+		if (mobileMenu) mobileMenu.style.maxHeight = abierto ? mobileMenu.scrollHeight + 'px' : '0px';
+		if (menuBtn) menuBtn.setAttribute('aria-expanded', String(abierto));
+		if (iconOpen) iconOpen.style.display = abierto ? 'none' : '';
+		if (iconClose) iconClose.style.display = abierto ? '' : 'none';
+	}
+
+	menuBtn?.addEventListener('click', () => abrirMenu(!menuAbierto));
+
+	function handleScroll() {
+		if (window.scrollY > 40) {
+			navbar?.classList.add('shadow-sm');
+		} else {
+			navbar?.classList.remove('shadow-sm');
+		}
+	}
+
+	window.addEventListener('scroll', handleScroll);
+	handleScroll();
 </script>

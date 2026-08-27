@@ -1,0 +1,58 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+const tipos = [
+	{
+		titulo: 'Tipo fijo',
+		texto: 'El interés se mantiene constante durante toda la vida del préstamo. Ofrece seguridad y cuota estable, a cambio de un tipo inicial algo más alto. Ideal si prefieres no tener sorpresas.',
+		tag: 'Estable',
+	},
+	{
+		titulo: 'Tipo variable',
+		texto: 'Suele ser Euribor + diferencial y se revisa normalmente cada año. La cuota puede bajar si los tipos caen, pero también subir. Suelen tener un tipo inicial más atractivo.',
+		tag: 'Flexible',
+	},
+	{
+		titulo: 'Tipo mixto',
+		texto: 'Combina lo mejor de ambos: tipo fijo durante los primeros años (normalmente 2 a 5) y variable a partir de entonces. Buena opción intermedia.',
+		tag: 'Intermedio',
+	},
+];
+---
+
+<ContentLayout
+	label="Blog · 5 de agosto de 2026"
+	title="Hipoteca fija o variable: cuál te conviene en 2026"
+	subtitle="Elegir el tipo de tu hipoteca es una de las decisiones financieras más importantes de tu vida. Estas son las diferencias clave."
+>
+
+	<div class="max-w-[760px] mx-auto space-y-12">
+		<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-3xl p-8 md:p-10 shadow-sm space-y-10">
+			<p class="text-lg text-stone-600 leading-relaxed">Para decantarte por una u otra opción tienes que equilibrar tres factores: el <strong class="text-stone-900">tipo inicial</strong>, la <strong class="text-stone-900">estabilidad de la cuota</strong> y tu <strong class="text-stone-900">tolerancia al riesgo</strong>.</p>
+
+			{tipos.map((t) => (
+				<div class="group rounded-2xl border border-stone-200 bg-stone-50/50 p-6 transition-all duration-300 hover:border-teal-400 hover:shadow-lg">
+					<div class="flex items-center justify-between mb-2">
+						<h2 class="font-serif text-xl font-medium text-stone-900">{t.titulo}</h2>
+						<span class="text-[10px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full bg-white border border-stone-200 text-teal-700">{t.tag}</span>
+					</div>
+					<p class="text-sm text-stone-500 leading-relaxed">{t.texto}</p>
+				</div>
+			))}
+
+			<h2 class="font-serif text-2xl font-medium text-stone-900 pt-2">Cómo decidir</h2>
+			<p class="text-stone-600 leading-relaxed">Simula distintos escenarios y plazos para ver el impacto en tu cuota y en el total de intereses que pagarás. Piensa en tu tolerancia al riesgo y en cuánto tiempo planeas quedarte en la vivienda.</p>
+		</div>
+
+		<div class="bg-teal-50 border border-teal-200 rounded-2xl p-7 flex items-start gap-4">
+			<svg class="flex-shrink-0 text-teal-700 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+			<p class="text-sm text-teal-800 leading-relaxed"><strong>Prueba:</strong> simula tu caso con nuestra <a href="/calculadora/hipoteca" class="text-teal-700 underline hover:text-teal-800">calculadora de hipotecas</a> y compara tipo fijo, variable y mixto.</p>
+		</div>
+
+		<a href="/blog" class="inline-flex items-center gap-2 text-sm font-medium text-teal-700 hover:text-teal-800 no-underline">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+			Todos los artículos
+		</a>
+	</div>
+
+</ContentLayout>

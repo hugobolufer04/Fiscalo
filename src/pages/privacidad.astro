@@ -1,0 +1,55 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const secciones = [
+	{
+		titulo: 'Responsable del tratamiento',
+		texto: 'El responsable del sitio web Fiscalo es Hugo Bolufer Franco. Puedes contactarnos a través del correo indicado en la página de contacto.',
+		icon: 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z',
+	},
+	{
+		titulo: '¿Qué datos recogemos?',
+		texto: 'En Fiscalo los cálculos se realizan íntegramente en tu navegador. No almacenamos los datos que introduces en las calculadoras ni en servidores. Los únicos datos posibles son los que nos facilitas voluntariamente al contactar (nombre, correo y mensaje).',
+		icon: 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z',
+	},
+	{
+		titulo: 'Finalidad del tratamiento',
+		texto: 'Los datos que nos aportes voluntariamente se usan únicamente para responder a tus consultas y gestionar la relación con el sitio. No se ceden a terceros salvo obligación legal.',
+		icon: 'M20 6L9 17l-5-5',
+	},
+	{
+		titulo: 'Legitimación y tus derechos',
+		texto: 'La base legal es tu consentimiento, otorgado al contactar. Tienes derecho a acceder, rectificar, suprimir, oponerte, limitar y portar tus datos; puedes retirar tu consentimiento en cualquier momento.',
+		icon: 'M12 22s8-4.5 8-11.8A8 8 0 0 0 12 2a8 8 0 0 0-8 8.2c0 7.3 8 11.8 8 11.8z',
+	},
+	{
+		titulo: 'Conservación de los datos',
+		texto: 'Conservaremos tus datos únicamente durante el tiempo necesario para atender tu consulta y cumplir las obligaciones legales aplicables.',
+		icon: 'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
+	},
+];
+---
+
+<ContentLayout
+	label="Legal"
+	title="Política de Privacidad"
+	subtitle="Cómo tratamos y protegemos tus datos personales. En Fiscalo tu privacidad es una prioridad."
+>
+
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+		{secciones.map((s) => (
+			<div class="group bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-teal-400">
+				<div class="w-10 h-10 flex-shrink-0 rounded-xl bg-teal-50 group-hover:bg-teal-700 flex items-center justify-center mb-4 transition-colors duration-300">
+					<svg class="w-5 h-5 text-teal-700 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon}/></svg>
+				</div>
+				<h2 class="font-serif text-xl font-medium text-stone-900 mb-2">{s.titulo}</h2>
+				<p class="text-sm text-stone-500 leading-relaxed">{s.texto}</p>
+			</div>
+		))}
+		<div class="md:col-span-2 bg-teal-50 border border-teal-200 rounded-2xl p-6 flex items-start gap-4">
+			<svg class="flex-shrink-0 text-teal-700 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+			<p class="text-sm text-teal-800 leading-relaxed">Última actualización: 2026. Esta política puede modificarse; te recomendamos revisarla periódicamente.</p>
+		</div>
+	</div>
+
+</ContentLayout>

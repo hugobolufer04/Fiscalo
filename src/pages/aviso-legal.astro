@@ -1,0 +1,55 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const secciones = [
+	{
+		titulo: 'Datos identificativos',
+		texto: 'El titular del sitio web Fiscalo es Hugo Bolufer Franco. El uso de este sitio te atribuye la condición de usuario e implica la aceptación de estas condiciones.',
+		icon: 'M20 6L9 17l-5-5',
+	},
+	{
+		titulo: 'Uso del sitio',
+		texto: 'El usuario se compromete a hacer un uso adecuado de los contenidos y servicios, y a no emplearlos para actividades ilícitas. Las calculadoras tienen finalidad meramente informativa y orientativa, y no constituyen asesoramiento fiscal, laboral, jurídico ni financiero.',
+		icon: 'M12 3l9 5-9 5-9-5 9-5zM3 8v5c0 2 4 4 9 4s9-2 9-4V8',
+	},
+	{
+		titulo: 'Propiedad intelectual',
+		texto: 'Todos los contenidos del sitio (textos, imágenes, logotipos, diseño y código) son propiedad del titular o de sus legítimos titulares, protegidos por la normativa de propiedad intelectual. Queda prohibida su reproducción sin autorización.',
+		icon: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+	},
+	{
+		titulo: 'Exención de responsabilidad',
+		texto: 'No nos hacemos responsables del uso que terceros hagan de los contenidos ni de errores u omisiones. Los resultados de las calculadoras son estimaciones y pueden diferir de los importes oficiales de tu caso concreto.',
+		icon: 'M12 22s8-4.5 8-11.8A8 8 0 0 0 12 2a8 8 0 0 0-8 8.2c0 7.3 8 11.8 8 11.8z',
+	},
+	{
+		titulo: 'Modificaciones',
+		texto: 'Nos reservamos el derecho de modificar, en cualquier momento y sin previo aviso, el contenido del sitio y estas condiciones.',
+		icon: 'M3 3v18h18M18 7l-8 8-3-3',
+	},
+];
+---
+
+<ContentLayout
+	label="Legal"
+	title="Aviso Legal"
+	subtitle="Condiciones generales de uso del sitio web Fiscalo."
+>
+
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+		{secciones.map((s) => (
+			<div class="group bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-teal-400">
+				<div class="w-10 h-10 flex-shrink-0 rounded-xl bg-teal-50 group-hover:bg-teal-700 flex items-center justify-center mb-4 transition-colors duration-300">
+					<svg class="w-5 h-5 text-teal-700 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon}/></svg>
+				</div>
+				<h2 class="font-serif text-xl font-medium text-stone-900 mb-2">{s.titulo}</h2>
+				<p class="text-sm text-stone-500 leading-relaxed">{s.texto}</p>
+			</div>
+		))}
+		<div class="md:col-span-2 bg-teal-50 border border-teal-200 rounded-2xl p-6 flex items-start gap-4">
+			<svg class="flex-shrink-0 text-teal-700 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+			<p class="text-sm text-teal-800 leading-relaxed">Última actualización: 2026. Si vives fuera de España, ten en cuenta que la normativa aplicable puede diferir.</p>
+		</div>
+	</div>
+
+</ContentLayout>

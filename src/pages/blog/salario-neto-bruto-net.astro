@@ -1,0 +1,75 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+const pasos = [
+	{
+		numero: '1',
+		titulo: 'Cotizaciones a la Seguridad Social',
+		texto: 'Del salario bruto se descuentan las cotizaciones del trabajador: contingencias comunes (4,70 %), desempleo (1,65 %), formación profesional (0,60 %) y otras. En total suelen sumar en torno al 6,35 % de la base de cotización.',
+	},
+	{
+		numero: '2',
+		titulo: 'Retención del IRPF',
+		texto: 'Después de descontar las cotizaciones, se aplica la retención del IRPF, que es progresiva: cada tramo de tu sueldo tributa a un tipo distinto. A más ganas, más alto es el tipo medio aplicado.',
+	},
+	{
+		numero: '3',
+		titulo: 'El resultado',
+		texto: 'Al restar cotizaciones e IRPF del bruto anual obtienes el neto anual. Dividiéndolo entre el número de pagas (12 o 14) obtienes tu neto mensual.',
+	},
+];
+---
+
+<ContentLayout
+	label="Blog · 12 de agosto de 2026"
+	title="Cómo calcular tu salario neto a partir del bruto"
+	subtitle="Cuando ves tu salario bruto en el contrato, el dinero que realmente llega a tu cuenta cada mes es menor. Esto es lo que hay detrás."
+>
+
+	<div class="max-w-[720px] mx-auto">
+
+		<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-3xl p-7 md:p-9 shadow-sm mb-10">
+			<p class="text-lg text-stone-600 leading-relaxed">La diferencia entre tu sueldo bruto y el neto está en dos grandes conceptos: las <strong class="text-stone-900">cotizaciones a la Seguridad Social</strong> y la <strong class="text-stone-900">retención del IRPF</strong>.</p>
+		</div>
+
+		{pasos.length > 0 && (
+			<div class="bg-white/70 backdrop-blur-md border border-stone-200 rounded-3xl p-7 md:p-9 shadow-sm mb-10">
+				<div class="flex gap-5 py-8 first:pt-0">
+					<div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-semibold font-mono text-base mt-0.5">{pasos[0].numero}</div>
+					<div>
+						<h2 class="font-serif text-lg md:text-xl font-medium text-stone-900 mb-1.5">{pasos[0].titulo}</h2>
+						<p class="text-sm text-stone-500 leading-relaxed">{pasos[0].texto}</p>
+					</div>
+				</div>
+				<div class="border-t border-stone-200"></div>
+				<div class="flex gap-5 py-8">
+					<div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-semibold font-mono text-base mt-0.5">{pasos[1].numero}</div>
+					<div>
+						<h2 class="font-serif text-lg md:text-xl font-medium text-stone-900 mb-1.5">{pasos[1].titulo}</h2>
+						<p class="text-sm text-stone-500 leading-relaxed">{pasos[1].texto}</p>
+					</div>
+				</div>
+				<div class="border-t border-stone-200"></div>
+				<div class="flex gap-5 py-8 last:pb-0">
+					<div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-semibold font-mono text-base mt-0.5">{pasos[2].numero}</div>
+					<div>
+						<h2 class="font-serif text-lg md:text-xl font-medium text-stone-900 mb-1.5">{pasos[2].titulo}</h2>
+						<p class="text-sm text-stone-500 leading-relaxed">{pasos[2].texto}</p>
+					</div>
+				</div>
+			</div>
+		)}
+
+		<div class="bg-teal-50 border border-teal-200 rounded-2xl p-6 md:p-7 flex items-start gap-4 mb-10">
+			<svg class="flex-shrink-0 text-teal-700 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+			<p class="text-sm text-teal-800 leading-relaxed"><strong class="font-semibold">Consejo:</strong> usa nuestra <a href="/calculadora/salario-neto" class="text-teal-700 underline hover:text-teal-800">calculadora de salario neto</a> para ver tu caso concreto al detalle, con el desglose de IRPF y Seguridad Social.</p>
+		</div>
+
+		<a href="/blog" class="inline-flex items-center gap-2 text-sm font-medium text-teal-700 hover:text-teal-800 no-underline">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+			Todos los artículos
+		</a>
+
+	</div>
+
+</ContentLayout>

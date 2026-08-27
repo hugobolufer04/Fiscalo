@@ -1,0 +1,66 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const preguntas = [
+	{
+		pregunta: '¿Las calculadoras son gratuitas?',
+		respuesta: 'Sí. Todas nuestras calculadoras son 100 % gratuitas y no requieren registro. Los cálculos se realizan en tu propio navegador.',
+		icon: 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z',
+	},
+	{
+		pregunta: '¿Las calculadoras guardan mis datos?',
+		respuesta: 'No. Todo el cálculo ocurre en tu dispositivo. Los datos que introduces en las calculadoras no se envían ni se almacenan en ningún servidor.',
+		icon: 'M12 22s8-4.5 8-11.8A8 8 0 0 0 12 2a8 8 0 0 0-8 8.2c0 7.3 8 11.8 8 11.8zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+	},
+	{
+		pregunta: '¿Son oficiales los resultados?',
+		respuesta: 'Las calculadoras usan los tipos y tramos de la normativa española vigente, pero el resultado es orientativo y aproximado. Para decisiones fiscales o laborales importantes consulta siempre a un profesional o la fuente oficial.',
+		icon: 'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
+	},
+	{
+		pregunta: '¿Con qué frecuencia se actualizan los datos?',
+		respuesta: 'Procuramos mantener los tramos y coeficientes actualizados según la normativa de cada ejercicio. Revisa la página correspondiente para conocer el año de referencia.',
+		icon: 'M1 4v6h6M21 20v-6h-6M3.5 10a9 9 0 0 1 14.9-3.4L21 9M3.5 14l2.6 2.4A9 9 0 0 0 21 12',
+	},
+	{
+		pregunta: '¿Qué calculo en la de salario neto?',
+		respuesta: 'Estima el sueldo neto mensual y anual descontando la cotización a la Seguridad Social y la retención del IRPF según tu salario bruto y situación personal.',
+		icon: 'M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
+	},
+	{
+		pregunta: '¿Cómo calculo el finiquito?',
+		respuesta: 'Introduce tu salario mensual, los días trabajados, las vacaciones pendientes y tu antigüedad. La calculadora estima los días del mes, las vacaciones no disfrutadas, las pagas extras y la posible indemnización.',
+		icon: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+	},
+];
+---
+
+<ContentLayout
+	label="Ayuda"
+	title="Preguntas Frecuentes"
+	subtitle="Resolvemos las dudas más comunes sobre Fiscalo y sus calculadoras."
+>
+
+	<div class="max-w-[800px] mx-auto space-y-6">
+		{preguntas.map((p) => (
+			<details class="group bg-white/70 backdrop-blur-md border border-stone-200 rounded-2xl shadow-sm transition-all duration-300 hover:border-teal-300 open:border-teal-300 open:shadow-lg">
+				<summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none">
+					<div class="flex items-center gap-4">
+						<div class="w-10 h-10 flex-shrink-0 rounded-xl bg-teal-50 group-open:bg-teal-700 transition-colors flex items-center justify-center">
+							<svg class="w-5 h-5 text-teal-700 group-open:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={p.icon}/></svg>
+						</div>
+						<span class="font-medium text-stone-900">{p.pregunta}</span>
+					</div>
+					<svg class="flex-shrink-0 text-stone-400 transition-transform group-open:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+				</summary>
+				<p class="px-6 pb-5 pl-20 text-sm text-stone-600 leading-relaxed">{p.respuesta}</p>
+			</details>
+		))}
+	</div>
+
+	<div class="max-w-[800px] mx-auto mt-16 p-8 md:p-10 rounded-2xl bg-teal-50 border border-teal-200 text-center">
+		<h2 class="font-serif text-lg font-medium text-stone-900 mb-2">¿No encuentras tu respuesta?</h2>
+		<p class="text-sm text-teal-800 leading-relaxed">Estamos aquí para ayudarte. <a href="/contacto" class="text-teal-700 font-semibold underline hover:text-teal-800">Contáctanos</a> y te responderemos lo antes posible.</p>
+	</div>
+
+</ContentLayout>

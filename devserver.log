@@ -1,0 +1,8 @@
+[2m16:50:51[22m [34m[vite][39m connected.
+[2m16:50:52[22m [34m[types][39m Generated [2m1ms[22m
+[2m16:50:52[22m [34m[vite][39m connected.
+[2m16:50:52[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[42m[1m astro [22m[49m [32mv7.2.4[39m [2mready in[22m 1379 [2mms[22m
+[2m┃[22m Local    [36mhttp://localhost:4321/[39m
+[2m┃[22m Network  [36mhttp://192.168.1.247:4321/[39m
+[2m16:50:52[22m [32mwatching for file changes...[39m
