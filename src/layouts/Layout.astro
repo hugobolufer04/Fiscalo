@@ -1,8 +1,12 @@
+---
+import CookieBanner from '../sections/CookieBanner.astro';
+---
+
 <!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/fiscalo-logo.svg" />
 		<link rel="icon" href="/fiscalo-logo.ico" />
 		<title>Fiscalo — Calculadoras Financieras</title>
@@ -13,6 +17,7 @@
 	</head>
 	<body>
 		<slot />
+		<CookieBanner />
 	</body>
 </html>
 

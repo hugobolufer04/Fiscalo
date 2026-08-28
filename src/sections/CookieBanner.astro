@@ -1,0 +1,50 @@
+---
+---
+
+<section id="cookieBanner" class="hidden fixed bottom-0 left-0 right-0 z-[60]" role="dialog" aria-live="polite" aria-label="Aviso de cookies">
+	<div class="bg-stone-900 text-stone-300 border-t border-stone-700 px-6 py-5 shadow-2xl">
+		<div class="max-w-[1200px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-8">
+			<div class="text-sm leading-relaxed">
+				<span class="text-white font-semibold">Tu privacidad es importante.</span>
+				<span class="text-stone-400"> Usamos únicamente cookies esenciales para que el sitio funcione correctamente. No usamos cookies de seguimiento ni publicidad. </span>
+				<a href="/cookies" class="text-teal-400 underline underline-offset-2 hover:text-teal-300">Política de cookies</a>
+			</div>
+			<div class="flex items-center gap-3 shrink-0">
+				<button id="cookieRechazar" class="px-5 py-2.5 rounded-lg text-sm font-medium text-stone-300 border border-stone-600 hover:border-stone-400 hover:text-white transition-colors cursor-pointer">
+					Rechazar
+				</button>
+				<button id="cookieAceptar" class="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-teal-700 hover:bg-teal-800 transition-colors cursor-pointer">
+					Aceptar
+				</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	(function () {
+		const banner = document.getElementById('cookieBanner') as HTMLElement | null;
+		const key = 'fiscalo_cookies';
+		const valor = (() => {
+			try {
+				return JSON.parse(localStorage.getItem(key) || 'null');
+			} catch {
+				return null;
+			}
+		})();
+
+		if (!banner || valor !== null) return;
+
+		banner.classList.remove('hidden');
+
+		const cerrar = (eleccion: string) => {
+			try {
+				localStorage.setItem(key, JSON.stringify({ eleccion, fecha: new Date().toISOString() }));
+			} catch {}
+			banner.classList.add('hidden');
+		};
+
+		document.getElementById('cookieAceptar')?.addEventListener('click', () => cerrar('aceptar'));
+		document.getElementById('cookieRechazar')?.addEventListener('click', () => cerrar('rechazar'));
+	})();
+</script>
